@@ -34,7 +34,7 @@ namespace VeiculosAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SVTADbContext sVTADbContext)
         {
             if (env.IsDevelopment())
             {
@@ -44,6 +44,8 @@ namespace VeiculosAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            //garante que o banco será criado
+            sVTADbContext.Database.EnsureCreated();
 
             app.UseAuthorization();
 
