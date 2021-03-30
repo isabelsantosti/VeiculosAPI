@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VeiculosAPI.Data;
+using VeiculosAPI.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,14 +14,20 @@ namespace VeiculosAPI.Controllers
     [ApiController]
     public class VeiculosController : ControllerBase
     {
+        private SVTADbContext _sVTADbContext;
 
+        public VeiculosController(SVTADbContext sVTADbContext)
+        {
+            _sVTADbContext = sVTADbContext;
+        }
 
 
         // GET: api/<VeiculosController>
+        //metodo para retornar uma lista de veiculos
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Veiculos> Get()
         {
-            return new string[] { "value1", "value2" };
+            return _sVTADbContext.Veiculos;
         }
 
         // GET api/<VeiculosController>/5
