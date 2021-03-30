@@ -31,10 +31,12 @@ namespace VeiculosAPI.Controllers
         }
 
         // GET api/<VeiculosController>/5
+        // retorna um veiculo por ID
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Veiculos Get(int id)
         {
-            return "value";
+            var veiculos = _sVTADbContext.Veiculos.Find(id);
+            return veiculos;
         }
 
         // POST api/<VeiculosController>
