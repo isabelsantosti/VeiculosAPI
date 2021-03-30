@@ -41,20 +41,31 @@ namespace VeiculosAPI.Controllers
 
         // POST api/<VeiculosController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Veiculos veiculos)
         {
+            //adiciona o veiculo
+            _sVTADbContext.Veiculos.Add(veiculos);
+            //salva dentro do banco 
+            _sVTADbContext.SaveChanges();
         }
 
         // PUT api/<VeiculosController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] Veiculos veiculos)
         {
+            var entidade =_sVTADbContext.Veiculos.Find(id);
+            entidade.Nome = veiculos.Nome;
+            entidade.Preco = veiculos.Preco;
+            _sVTADbContext.SaveChanges();
         }
 
         // DELETE api/<VeiculosController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            var veiculo = _sVTADbContext.Veiculos.Find(id);
+            _sVTADbContext.Veiculos.Remove(veiculo);
+            _sVTADbContext.SaveChanges();
         }
     }
 }
