@@ -7,8 +7,8 @@ namespace VeiculosAPI.Models
 {
     public class Veiculos
     {
-        public int Id_veiculo { get; set; }
-        public string Nome_veiculo { get; set; }
+        public int Id { get; set; }
+        public string Nome { get; set; }
         public double Preco { get; set; }
     }
 }
