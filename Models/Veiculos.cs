@@ -10,5 +10,7 @@ namespace VeiculosAPI.Models
         public int Id { get; set; }
         public string Nome { get; set; }
         public double Preco { get; set; }
+        public string Cor { get; set; }
+        public string Modelo { get; set; }
     }
 }
