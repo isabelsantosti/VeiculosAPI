@@ -69,6 +69,8 @@ namespace VeiculosAPI.Controllers
             {
                 entidade.Nome = veiculos.Nome;
                 entidade.Preco = veiculos.Preco;
+                entidade.Cor = veiculos.Cor;
+                entidade.Modelo = veiculos.Modelo;
             }
             _sVTADbContext.SaveChanges();
             return Ok(mensagem200);
