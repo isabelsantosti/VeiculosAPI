@@ -16,6 +16,9 @@ namespace VeiculosAPI.Controllers
     public class VeiculosController : ControllerBase
     {
         private SVTADbContext _sVTADbContext;
+        const string mensagem400 = "Não há registros desse Id";
+        const string mensagem200 = "Registro recuperado com sucesso";
+        const string mensagem201 = "Registro atualizado com sucesso";
 
         public VeiculosController(SVTADbContext sVTADbContext)
         {
@@ -34,10 +37,14 @@ namespace VeiculosAPI.Controllers
         // GET api/<VeiculosController>/5
         // retorna um veiculo por ID
         [HttpGet("{id}")]
-        public Veiculos Get(int id)
+        public IActionResult Get(int id)
         {
             var veiculos = _sVTADbContext.Veiculos.Find(id);
-            return veiculos;
+            if (veiculos.Equals(null))
+            {
+                return NotFound(mensagem400);
+            }
+            return Ok(veiculos);
         }
 
         // POST api/<VeiculosController>
@@ -64,7 +71,7 @@ namespace VeiculosAPI.Controllers
                 entidade.Preco = veiculos.Preco;
             }
             _sVTADbContext.SaveChanges();
-            return Ok("Registro atualizado com sucesso");
+            return Ok(mensagem200);
         }
 
         // DELETE api/<VeiculosController>/5
@@ -72,9 +79,13 @@ namespace VeiculosAPI.Controllers
         public IActionResult Delete(int id)
         {
             var veiculo = _sVTADbContext.Veiculos.Find(id);
+            if (veiculo.Equals(null))
+            {
+                return NotFound("Não há registros desse Id");
+            }
             _sVTADbContext.Veiculos.Remove(veiculo);
             _sVTADbContext.SaveChanges();
-            return Ok("Registro apagado com sucesso");
+            return Ok(mensagem200);
         }
     }
 }
