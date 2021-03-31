@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,9 @@ namespace VeiculosAPI.Controllers
         // GET: api/<VeiculosController>
         //metodo para retornar uma lista de veiculos
         [HttpGet]
-        public IEnumerable<Veiculos> Get()
+        public IActionResult Get()
         {
-            return _sVTADbContext.Veiculos;
+            return Ok(_sVTADbContext.Veiculos);
         }
 
         // GET api/<VeiculosController>/5
@@ -41,31 +42,39 @@ namespace VeiculosAPI.Controllers
 
         // POST api/<VeiculosController>
         [HttpPost]
-        public void Post([FromBody] Veiculos veiculos)
+        public IActionResult Post([FromBody] Veiculos veiculos)
         {
             //adiciona o veiculo
             _sVTADbContext.Veiculos.Add(veiculos);
             //salva dentro do banco 
             _sVTADbContext.SaveChanges();
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         // PUT api/<VeiculosController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Veiculos veiculos)
+        public IActionResult Put(int id, [FromBody] Veiculos veiculos)
         {
             var entidade =_sVTADbContext.Veiculos.Find(id);
-            entidade.Nome = veiculos.Nome;
-            entidade.Preco = veiculos.Preco;
+            if (entidade.Equals(null))
+                return NotFound("Não há registros desse Id");
+            else
+            {
+                entidade.Nome = veiculos.Nome;
+                entidade.Preco = veiculos.Preco;
+            }
             _sVTADbContext.SaveChanges();
+            return Ok("Registro atualizado com sucesso");
         }
 
         // DELETE api/<VeiculosController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
             var veiculo = _sVTADbContext.Veiculos.Find(id);
             _sVTADbContext.Veiculos.Remove(veiculo);
             _sVTADbContext.SaveChanges();
+            return Ok("Registro apagado com sucesso");
         }
     }
 }
