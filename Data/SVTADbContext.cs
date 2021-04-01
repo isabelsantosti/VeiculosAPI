@@ -14,5 +14,8 @@ namespace VeiculosAPI.Data
 
         }
         public DbSet<Veiculo> Veiculos { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Categoria> Categorias { get; set; }
+        public DbSet<Imagem> Imagens { get; set; }
     }
 }
