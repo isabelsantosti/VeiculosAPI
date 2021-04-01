@@ -22,6 +22,7 @@ namespace VeiculosAPI.Models
         public string Condicao { get; set; }
         public int UsuarioId { get; set; }
         public int CategoriaId { get; set; }
+        //add interface para relacionamento 1 para muitos
         public ICollection<Imagem> Imagens { get; set; }
     }
 }
