@@ -13,6 +13,6 @@ namespace VeiculosAPI.Data
         {
 
         }
-        public DbSet<Veiculos> Veiculos { get; set; }
+        public DbSet<Veiculo> Veiculos { get; set; }
     }
 }

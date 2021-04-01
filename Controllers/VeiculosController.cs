@@ -49,7 +49,7 @@ namespace VeiculosAPI.Controllers
 
         // POST api/<VeiculosController>
         [HttpPost]
-        public IActionResult Post([FromBody] Veiculos veiculos)
+        public IActionResult Post([FromBody] Veiculo veiculos)
         {
             //adiciona o veiculo
             _sVTADbContext.Veiculos.Add(veiculos);
@@ -60,7 +60,7 @@ namespace VeiculosAPI.Controllers
 
         // PUT api/<VeiculosController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Veiculos veiculos)
+        public IActionResult Put(int id, [FromBody] Veiculo veiculos)
         {
             var entidade =_sVTADbContext.Veiculos.Find(id);
             if (entidade.Equals(null))
