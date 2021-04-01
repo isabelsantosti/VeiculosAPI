@@ -12,5 +12,8 @@ namespace VeiculosAPI.Models
         public double Preco { get; set; }
         public string Cor { get; set; }
         public string Modelo { get; set; }
+        public string Motor { get; set; }
+        public string Empresa { get; set; }
+        public DateTime DataPostagem { get; set; }
     }
 }
