@@ -10,8 +10,8 @@ using VeiculosAPI.Data;
 namespace VeiculosAPI.Migrations
 {
     [DbContext(typeof(SVTADbContext))]
-    [Migration("20210401172443_CriacaoInicial")]
-    partial class CriacaoInicial
+    [Migration("20210402182655_InicialCreate")]
+    partial class InicialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -62,6 +62,9 @@ namespace VeiculosAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
