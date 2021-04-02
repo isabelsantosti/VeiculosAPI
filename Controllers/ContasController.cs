@@ -20,9 +20,21 @@ namespace VeiculosAPI.Controllers
             _svtaDbContext = dbContext;
         }
         [HttpPost]
-        public void Registro([FromBody] Usuario usuario)
+        //Método de registro de usuários
+        public IActionResult Registro([FromBody] Usuario usuario)
         {
-            _svtaDbContext.Usuarios.Where(u => u.Email == usuario.Email).SingleOrDefault();
+            var userSameEmail = _svtaDbContext.Usuarios.Where(u => u.Email == usuario.Email).SingleOrDefault();
+            if (userSameEmail != null)
+                return BadRequest("Um usuário com o mesmo e-mail já existe");
+            var objetoUsuario = new Usuario()
+            {
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                Senha = usuario.Senha,
+            };
+            _svtaDbContext.Usuarios.Add(objetoUsuario);
+            _svtaDbContext.SaveChanges();
+            return StatusCode(StatusCodes.Status201Created);
         }
     }
 }
