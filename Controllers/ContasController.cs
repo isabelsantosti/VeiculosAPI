@@ -20,6 +20,7 @@ namespace VeiculosAPI.Controllers
             _svtaDbContext = dbContext;
         }
         [HttpPost]
+        //rota api/contas/registro
         //Método de registro de usuários
         public IActionResult Registro([FromBody] Usuario usuario)
         {
@@ -28,7 +29,7 @@ namespace VeiculosAPI.Controllers
                 return BadRequest("Um usuário com o mesmo e-mail já existe");
             var objetoUsuario = new Usuario()
             {
-                Nome = usuario.Nome,
+                Nome = usuario.Nome, 
                 Email = usuario.Email,
                 Senha = usuario.Senha,
             };
