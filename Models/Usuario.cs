@@ -13,6 +13,7 @@ namespace VeiculosAPI.Models
         public string Senha { get; set; }
         public string Telefone { get; set; }
         public string ImageUrl { get; set; }
+        public DateTime DataInclusao { get; set; }
         //interface de coleção para a criação do relaciomaneto 1 para muitos da classe usuario para veículos
         public ICollection<Veiculo> Veiculos { get; set; }
 

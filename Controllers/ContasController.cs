@@ -30,9 +30,10 @@ namespace VeiculosAPI.Controllers
                 return BadRequest("Um usuário com o mesmo e-mail já existe");
             var objetoUsuario = new Usuario()
             {
-                Nome = usuario.Nome, 
+                Nome = usuario.Nome,
                 Email = usuario.Email,
                 Senha = SecurePasswordHasherHelper.Hash(usuario.Senha),
+                DataInclusao = DateTime.Now
             };
             _svtaDbContext.Usuarios.Add(objetoUsuario);
             _svtaDbContext.SaveChanges();

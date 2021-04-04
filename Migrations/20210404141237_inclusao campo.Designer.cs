@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VeiculosAPI.Data;
 
 namespace VeiculosAPI.Migrations
 {
     [DbContext(typeof(SVTADbContext))]
-    partial class SVTADbContextModelSnapshot : ModelSnapshot
+    [Migration("20210404141237_inclusao campo")]
+    partial class inclusaocampo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
