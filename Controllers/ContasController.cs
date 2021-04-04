@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AuthenticationPlugin;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace VeiculosAPI.Controllers
             {
                 Nome = usuario.Nome, 
                 Email = usuario.Email,
-                Senha = usuario.Senha,
+                Senha = SecurePasswordHasherHelper.Hash(usuario.Senha),
             };
             _svtaDbContext.Usuarios.Add(objetoUsuario);
             _svtaDbContext.SaveChanges();
