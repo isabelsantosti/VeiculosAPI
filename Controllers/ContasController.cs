@@ -1,6 +1,7 @@
 ﻿using AuthenticationPlugin;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,14 @@ namespace VeiculosAPI.Controllers
     public class ContasController : ControllerBase
     {
         private SVTADbContext _svtaDbContext;
+        private IConfiguration _configuration;
+        private readonly AuthService _auth;
 
-        public ContasController(SVTADbContext dbContext)
+        public ContasController(IConfiguration configuration, SVTADbContext dbContext)
         {
             _svtaDbContext = dbContext;
+            _configuration = configuration;
+            _auth = new AuthService(_configuration);
         }
         [HttpPost]
         //rota api/contas/registro
