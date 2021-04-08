@@ -78,7 +78,21 @@ namespace VeiculosAPI.Controllers
                 user_id = userEmail.Id
             });
         }
+        [HttpPost]
+        [Authorize]
+        public IActionResult TrocarSenha([FromBody] TrocarSenha trocarSenha)
+        {
+            var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+            var usuario = _svtaDbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
+            if (usuario == null)
+                return NotFound("Usuario não encontrado");
+            if (!SecurePasswordHasherHelper.Verify(trocarSenha.SenhaAntiga, usuario.Senha))
+                return Unauthorized("Desculpe, mas você não pode trocar sua senha");
 
-        public IActionResult TrocarSenha([FromBody] )
+            usuario.Senha = SecurePasswordHasherHelper.Hash(trocarSenha.NovaSenha);
+            _svtaDbContext.SaveChanges();
+
+            return Ok("Sua senha foi alterada com sucesso");
+        }
     }
 }
