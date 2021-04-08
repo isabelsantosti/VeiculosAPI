@@ -1,4 +1,5 @@
 ﻿using AuthenticationPlugin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -77,5 +78,7 @@ namespace VeiculosAPI.Controllers
                 user_id = userEmail.Id
             });
         }
+
+        public IActionResult TrocarSenha([FromBody] )
     }
 }
