@@ -1,4 +1,5 @@
 ﻿using AuthenticationPlugin;
+using ImageUploader;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -107,5 +109,26 @@ namespace VeiculosAPI.Controllers
 
             return Ok("Seu numero de telefone foi atualizado");
         }
+        [HttpPost]
+        [Authorize]
+        public IActionResult EditarPerfil([FromBody] byte[] ImageArray)
+        {
+            var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+            var usuario = _svtaDbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
+            if (usuario == null)
+                return NotFound("Usuario não encontrado");
+            var stream = new MemoryStream(ImageArray);
+            //globally unique identifier = GUID serve para dar um id unico para o arquivo, evitando sua duplicação
+            var guid = Guid.NewGuid().ToString();
+            var arquivo = $"{guid}.jpg";
+            var pasta = "wwwroot/Images";
+            var resposta = FilesHelper.UploadImage(stream, pasta, arquivo);
+            if (!resposta)
+                return BadRequest();
+            else
+                return Ok("Imagem carregada com sucesso!");
+
+        }
+
     }
 }

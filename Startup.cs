@@ -65,7 +65,7 @@ namespace VeiculosAPI
             //sVTADbContext.Database.EnsureCreated();
 
             app.UseAuthentication();
-
+            app.UseStaticFiles();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
