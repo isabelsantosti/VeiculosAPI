@@ -126,8 +126,11 @@ namespace VeiculosAPI.Controllers
             if (!resposta)
                 return BadRequest();
             else
-                return Ok("Imagem carregada com sucesso!");
-
+            {
+                usuario.ImageUrl = arquivo;
+                _svtaDbContext.SaveChanges();
+                return StatusCode(StatusCodes.Status201Created);
+            }
         }
 
     }
