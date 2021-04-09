@@ -94,5 +94,18 @@ namespace VeiculosAPI.Controllers
 
             return Ok("Sua senha foi alterada com sucesso");
         }
+        [HttpPost]
+        [Authorize]
+        public IActionResult TrocarTelefone([FromBody] TrocarTelefone trocarTelefone)
+        {
+            var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+            var usuario = _svtaDbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
+            if (usuario == null)
+                return NotFound("Usuario não encontrado");
+            usuario.Telefone = trocarTelefone.Telefone;
+            _svtaDbContext.SaveChanges();
+
+            return Ok("Seu numero de telefone foi atualizado");
+        }
     }
 }
