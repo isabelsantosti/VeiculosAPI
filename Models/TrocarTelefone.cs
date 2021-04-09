@@ -8,6 +8,5 @@ namespace VeiculosAPI.Models
     public class TrocarTelefone
     {
         public string Telefone { get; set; }
-
     }
 }
