@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace VeiculosAPI.Controllers
         {
             _sVTADbContext = sVTADbContext;
         }
-        [HttpPost]
+        [Authorize]
         public IActionResult Post(Veiculo veiculo)
         {
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
