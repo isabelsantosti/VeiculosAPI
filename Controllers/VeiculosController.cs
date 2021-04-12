@@ -13,6 +13,7 @@ namespace VeiculosAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class VeiculosController : ControllerBase
     {
         private SVTADbContext _sVTADbContext;
@@ -21,7 +22,6 @@ namespace VeiculosAPI.Controllers
         {
             _sVTADbContext = sVTADbContext;
         }
-        [Authorize]
         public IActionResult Post(Veiculo veiculo)
         {
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
@@ -50,6 +50,12 @@ namespace VeiculosAPI.Controllers
 
             return Ok(new { veiculoId = veiculos.Id, message = "Veículo adicionado com sucesso!" });
         }
+
+        /// <summary>
+        /// Todos os métodos abaixo eu utilizei o LINQ para fazer consultas dinâmicas no banco assim é possível,
+        /// Filtrar e buscar veículos, anunciar veículos recomendados etc.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("[action]")]
         //esse método vai retornar os veiculos recomendados os quais serão definidos pelo Adm no banco
         public IActionResult RecomendadoAds()
@@ -61,6 +67,19 @@ namespace VeiculosAPI.Controllers
                                Id = v.Id,
                                Nome = v.Nome,
                                Veiculo_ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+                           };
+            return Ok(veiculos);
+        }
+        //esse método vai retornar os veiculos recomendados os quais serão definidos pelo Adm no banco
+        [HttpGet("[action]")]
+        public IActionResult BuscarVeiculos(string busca)
+        {
+            var veiculos = from v in _sVTADbContext.Veiculos
+                           where v.Nome.StartsWith(busca)
+                           select new
+                           {
+                               Id = v.Id,
+                               Nome = v.Nome,
                            };
             return Ok(veiculos);
         }
