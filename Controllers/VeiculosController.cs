@@ -48,7 +48,21 @@ namespace VeiculosAPI.Controllers
             _sVTADbContext.Veiculos.Add(veiculos);
             _sVTADbContext.SaveChanges();
 
-            return Ok(new {veiculoId = veiculos.Id, message = "Veículo adicionado com sucesso!" });
+            return Ok(new { veiculoId = veiculos.Id, message = "Veículo adicionado com sucesso!" });
+        }
+        [HttpGet("[action]")]
+        //esse método vai retornar os veiculos recomendados os quais serão definidos pelo Adm no banco
+        public IActionResult RecomendadoAds()
+        {
+            var veiculos = from v in _sVTADbContext.Veiculos
+                           where v.isDestaque == true
+                           select new
+                           {
+                               Id = v.Id,
+                               Nome = v.Nome,
+                               Veiculo_ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+                           };
+            return Ok(veiculos);
         }
     }
 }
