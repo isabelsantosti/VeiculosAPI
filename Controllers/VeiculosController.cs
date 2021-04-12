@@ -35,7 +35,7 @@ namespace VeiculosAPI.Controllers
                 Cor = veiculo.Cor,
                 Fabricante = veiculo.Fabricante,
                 Condicao = veiculo.Condicao,
-                DataPostagem = veiculo.DataPostagem,
+                DataPostagem = DateTime.Now,
                 Motor = veiculo.Motor,
                 Preco = veiculo.Preco,
                 Modelo = veiculo.Modelo,
