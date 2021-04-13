@@ -135,5 +135,30 @@ namespace VeiculosAPI.Controllers
 
             return Ok(veiculo);
         }
+
+        [HttpGet("[action]")]
+        public IActionResult MeusAds()
+        {
+
+            var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+            var usuario = _sVTADbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
+            if (usuario == null)
+                return NotFound("Usuario não encontrado");
+            var veiculos = from v in _sVTADbContext.Veiculos
+                           where v.UsuarioId.Equals(usuario.Id)
+                           select new
+                           {
+                               Id = v.Id,
+                               Nome = v.Nome,
+                               Preco = v.Preco,
+                               Data = v.DataPostagem,
+                               Localizacao = v.Localizacao,
+                               isNovo = v.isNovo,
+                               ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+
+                           };
+
+            return Ok(veiculos);
+        }
     }
 }
