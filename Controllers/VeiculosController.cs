@@ -11,6 +11,7 @@ using VeiculosAPI.Models;
 
 namespace VeiculosAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
 
