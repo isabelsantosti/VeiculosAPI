@@ -30,7 +30,7 @@ namespace VeiculosAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //adicionando o serviço para se conectar ao banco
+            //adicionando o serviï¿½o para se conectar ao banco
             services.AddControllers();
             services.AddDbContext<SVTADbContext>(options => options.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=AutomoveisDB;"));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -61,7 +61,7 @@ namespace VeiculosAPI
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            //garante que o banco será criado
+            //garante que o banco serï¿½ criado
             //sVTADbContext.Database.EnsureCreated();
 
             app.UseAuthentication();
