@@ -13,7 +13,7 @@ namespace VeiculosAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class VeiculosController : ControllerBase
     {
         private SVTADbContext _sVTADbContext;
@@ -22,6 +22,7 @@ namespace VeiculosAPI.Controllers
         {
             _sVTADbContext = sVTADbContext;
         }
+        [Authorize]
         public IActionResult Post(Veiculo veiculo)
         {
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
@@ -81,6 +82,25 @@ namespace VeiculosAPI.Controllers
                                Id = v.Id,
                                Nome = v.Nome,
                            };
+            return Ok(veiculos);
+        }
+        [HttpGet]
+        public IActionResult GetVeiculos(int CategoriaId)
+        {
+            var veiculos = from v in _sVTADbContext.Veiculos
+                           where v.CategoriaId.Equals(CategoriaId)
+                           select new
+                           {
+                               Id = v.Id,
+                               Nome = v.Nome,
+                               Preco = v.Preco,
+                               Data = v.DataPostagem,
+                               Localizacao = v.Localizacao,
+                               isNovo = v.isNovo,
+                               ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+
+                           };
+
             return Ok(veiculos);
         }
     }
