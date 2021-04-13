@@ -13,7 +13,7 @@ namespace VeiculosAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class VeiculosController : ControllerBase
     {
         private SVTADbContext _sVTADbContext;
@@ -102,6 +102,37 @@ namespace VeiculosAPI.Controllers
                            };
 
             return Ok(veiculos);
+        }
+        [HttpGet("[action]")]
+        public IActionResult DetalhesVeiculos(int id)
+        {
+            var encontraVeiculo = _sVTADbContext.Veiculos.Find(id);
+            if (encontraVeiculo == null)
+                return NotFound("Não foi possível encontrar o veículo");
+
+            var veiculo = from a in _sVTADbContext.Veiculos
+                          join u in _sVTADbContext.Usuarios on a.UsuarioId equals u.Id
+                          where a.Id == id
+                          select new
+                          {
+                              Id = a.Id,
+                              Nome = a.Nome,
+                              Descricao = a.Descricao,
+                              Preco = a.Preco,
+                              Modelo = a.Modelo,
+                              Fabricante = a.Fabricante,
+                              Motor = a.Motor,
+                              Cor = a.Cor,
+                              DataPostagem = a.DataPostagem,
+                              Condicao = a.Condicao,
+                              Localizacao = a.Localizacao,
+                              Images = a.Imagens,
+                              Email = u.Email,
+                              Contato = u.Telefone,
+                              ImageUrl = u.ImageUrl
+                          };
+
+            return Ok(veiculo);
         }
     }
 }
