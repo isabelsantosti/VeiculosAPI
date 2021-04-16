@@ -63,7 +63,7 @@ namespace VeiculosAPI.Controllers
         public IActionResult RecomendadoAds()
         {
             var veiculos = from v in _sVTADbContext.Veiculos
-                           where v.isDestaque == true
+                           where v.isNovo == true
                            select new
                            {
                                Id = v.Id,
@@ -97,7 +97,7 @@ namespace VeiculosAPI.Controllers
                                Preco = v.Preco,
                                Data = v.DataPostagem,
                                Localizacao = v.Localizacao,
-                               isNovo = v.isNovo,
+                               isDestaque = v.isDestaque,
                                ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
 
                            };
@@ -153,7 +153,7 @@ namespace VeiculosAPI.Controllers
                                Preco = v.Preco,
                                Data = v.DataPostagem,
                                Localizacao = v.Localizacao,
-                               isNovo = v.isNovo,
+                               isDestaque = v.isDestaque,
                                ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
 
                            };
