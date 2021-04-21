@@ -77,7 +77,9 @@ namespace VeiculosAPI.Controllers
                 token_type = token.TokenType,
                 creation_Time = token.ValidFrom,
                 expiration_Time = token.ValidTo,
-                user_id = userEmail.Id
+                user_id = userEmail.Id,
+                user_nome = userEmail.Nome,
+                user_email = userEmail.Email
             });
         }
         [HttpPost]
