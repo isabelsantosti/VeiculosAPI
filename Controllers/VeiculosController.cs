@@ -25,31 +25,39 @@ namespace VeiculosAPI.Controllers
         }
         public IActionResult Post(Veiculo veiculo)
         {
-            var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
-            var usuario = _sVTADbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
-            if (usuario == null)
-                return NotFound("Usuario não encontrado");
-            var veiculos = new Veiculo()
-            {
-                Nome = veiculo.Nome,
-                Descricao = veiculo.Descricao,
-                Cor = veiculo.Cor,
-                Fabricante = veiculo.Fabricante,
-                Condicao = veiculo.Condicao,
-                DataPostagem = DateTime.Now,
-                Motor = veiculo.Motor,
-                Preco = veiculo.Preco,
-                Modelo = veiculo.Modelo,
-                Localizacao = veiculo.Localizacao,
-                CategoriaId = veiculo.CategoriaId,
-                isDestaque = false,
-                isNovo = false,
-                UsuarioId = usuario.Id
-            };
-            _sVTADbContext.Veiculos.Add(veiculos);
-            _sVTADbContext.SaveChanges();
 
-            return Ok(new { veiculoId = veiculos.Id, message = "Veículo adicionado com sucesso!", status=true });
+            try
+            {
+                var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+                var usuario = _sVTADbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
+                if (usuario == null)
+                    return NotFound("Usuario não encontrado");
+                var veiculos = new Veiculo()
+                {
+                    Nome = veiculo.Nome,
+                    Descricao = veiculo.Descricao,
+                    Cor = veiculo.Cor,
+                    Fabricante = veiculo.Fabricante,
+                    Condicao = veiculo.Condicao,
+                    DataPostagem = DateTime.Now,
+                    Motor = veiculo.Motor,
+                    Preco = veiculo.Preco,
+                    Modelo = veiculo.Modelo,
+                    Localizacao = veiculo.Localizacao,
+                    CategoriaId = veiculo.CategoriaId,
+                    isNovo = false,
+                    isDestaque = false,
+                    UsuarioId = usuario.Id
+                };
+                _sVTADbContext.Veiculos.Add(veiculos);
+                _sVTADbContext.SaveChanges();
+
+                return Ok(new { veiculoId = veiculos.Id, message = "Veículo adicionado com sucesso!", status = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -109,9 +117,9 @@ namespace VeiculosAPI.Controllers
             return veiculos;
         }
         [HttpGet("[action]")]
-        public IActionResult DetalhesVeiculos(int id)
+        public async Task<IActionResult> DetalhesVeiculos(int id)
         {
-            var encontraVeiculo = _sVTADbContext.Veiculos.FindAsync(id);
+            var encontraVeiculo = await _sVTADbContext.Veiculos.FindAsync(id);
             if (encontraVeiculo == null)
                 return NotFound("Não foi possível encontrar o veículo");
 
