@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -30,30 +31,17 @@ namespace VeiculosAPI.Controllers
             var categorias = _sVTADbContext.Categorias;
             return Ok(categorias);
         }
-
-        // GET api/<CategoriasController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<CategoriasController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] Categoria categoriaModel)
         {
+            var categoria = new Categoria()
+            {
+                Tipo = categoriaModel.Tipo,
+            };
+            _sVTADbContext.Categorias.Add(categoria);
+            _sVTADbContext.SaveChanges();
+            return StatusCode(StatusCodes.Status201Created);
         }
 
-        // PUT api/<CategoriasController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<CategoriasController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
