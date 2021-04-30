@@ -16,6 +16,7 @@ using VeiculosAPI.Models;
 
 namespace VeiculosAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class ContasController : ControllerBase
@@ -31,6 +32,7 @@ namespace VeiculosAPI.Controllers
             _auth = new AuthService(_configuration);
         }
         [HttpPost]
+        [AllowAnonymous]
         //rota api/contas/registro
         //Método de registro de usuários
         public IActionResult Registro([FromBody] Usuario usuario)
@@ -50,6 +52,7 @@ namespace VeiculosAPI.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Login([FromBody] Usuario usuario)
         {
             //usando o LINQ para fazer a consulta no email do usuário
@@ -83,7 +86,6 @@ namespace VeiculosAPI.Controllers
             });
         }
         [HttpPost]
-        [Authorize]
         public IActionResult TrocarSenha([FromBody] TrocarSenha trocarSenha)
         {
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
@@ -99,7 +101,6 @@ namespace VeiculosAPI.Controllers
             return Ok("Sua senha foi alterada com sucesso");
         }
         [HttpPost]
-        [Authorize]
         public IActionResult TrocarTelefone([FromBody] TrocarTelefone trocarTelefone)
         {
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
@@ -112,7 +113,6 @@ namespace VeiculosAPI.Controllers
             return Ok("Seu numero de telefone foi atualizado");
         }
         [HttpPost]
-        [Authorize]
         public IActionResult EditarPerfil([FromBody] byte[] ImageArray)
         {
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
@@ -134,6 +134,21 @@ namespace VeiculosAPI.Controllers
                 return StatusCode(StatusCodes.Status201Created);
             }
         }
-
+        [HttpGet]
+        public IActionResult UserProfileImage()
+        {
+            var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+            var usuario = _svtaDbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
+            if (usuario == null)
+                return NotFound("Usuario não encontrado");
+            var responseResult = _svtaDbContext.Usuarios
+                .Where(x => x.Email == usuarioEmail)
+                .Select(x => new
+                {
+                    x.ImageUrl
+                })
+                .SingleOrDefault();
+            return Ok(responseResult);
+        }
     }
 }
