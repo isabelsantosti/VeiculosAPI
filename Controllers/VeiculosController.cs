@@ -25,7 +25,6 @@ namespace VeiculosAPI.Controllers
         }
         public IActionResult Post(Veiculo veiculo)
         {
-
             try
             {
                 var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
@@ -151,13 +150,13 @@ namespace VeiculosAPI.Controllers
         [HttpGet("[action]")]
         public IActionResult MeusAds()
         {
-
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
             var usuario = _sVTADbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
             if (usuario == null)
                 return NotFound("Usuario não encontrado");
             var veiculos = from v in _sVTADbContext.Veiculos
                            where v.UsuarioId.Equals(usuario.Id)
+                           orderby v.DataPostagem descending
                            select new
                            {
                                Id = v.Id,
@@ -167,10 +166,76 @@ namespace VeiculosAPI.Controllers
                                Localizacao = v.Localizacao,
                                isDestaque = v.isDestaque,
                                ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
-
                            };
 
             return Ok(veiculos);
+        }
+        //GET api/Veiculos/FiltrarVeiculos?categoriaId=1&condicao=Novo&sort=asc&preco=20
+        [HttpGet("[action]")]
+        public IQueryable<object> FiltrarVeiculos(int categoriaId, string condicao, string sort, double preco)
+        {
+            IQueryable<object> veiculos;
+            switch (sort)
+            {
+                case "desc":
+                    veiculos = from v in _sVTADbContext.Veiculos
+                               join u in _sVTADbContext.Usuarios on v.UsuarioId equals u.Id
+                               join c in _sVTADbContext.Categorias on v.CategoriaId equals c.Id
+                               where v.Preco >= preco && c.Id == categoriaId && v.Condicao == condicao
+                               orderby v.Preco descending
+                               select new
+                               {
+                                   Id = v.Id,
+                                   Nome = v.Nome,
+                                   Preco = v.Preco,
+                                   Modelo = v.Modelo,
+                                   Localizacao = v.Localizacao,
+                                   Fabricante = v.Fabricante,
+                                   DataPostagem = v.DataPostagem,
+                                   isDestaque = v.isDestaque,
+                                   ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+                               };
+                    break;
+
+                case "asc":
+                    veiculos = from v in _sVTADbContext.Veiculos
+                               join u in _sVTADbContext.Usuarios on v.UsuarioId equals u.Id
+                               join c in _sVTADbContext.Categorias on v.CategoriaId equals c.Id
+                               where v.Preco >= preco && c.Id == categoriaId && v.Condicao == condicao
+                               orderby v.Preco descending
+                               select new
+                               {
+                                   Id = v.Id,
+                                   Nome = v.Nome,
+                                   Preco = v.Preco,
+                                   Modelo = v.Modelo,
+                                   Localizacao = v.Localizacao,
+                                   Fabricante = v.Fabricante,
+                                   DataPostagem = v.DataPostagem,
+                                   isDestaque = v.isDestaque,
+                                   ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+                               };
+                    break;
+
+                default:
+                    veiculos = from v in _sVTADbContext.Veiculos
+                               where v.CategoriaId == categoriaId
+                               select new
+                               {
+                                   Id = v.Id,
+                                   Nome = v.Nome,
+                                   Preco = v.Preco,
+                                   Modelo = v.Modelo,
+                                   Localizacao = v.Localizacao,
+                                   Fabricante = v.Fabricante,
+                                   DataPostagem = v.DataPostagem,
+                                   isDestaque = v.isDestaque,
+                                   ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+                               };
+                    break;
+            }
+
+            return veiculos;
         }
     }
 }
