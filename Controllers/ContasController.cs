@@ -126,7 +126,7 @@ namespace VeiculosAPI.Controllers
                 return BadRequest();
             else
             {
-                usuario.ImageUrl = arquivo;
+                usuario.ImageUrl = ImageFullPath;
                 _svtaDbContext.SaveChanges();
                 return StatusCode(StatusCodes.Status201Created);
             }

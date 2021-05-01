@@ -44,9 +44,10 @@ namespace VeiculosAPI.Controllers
                 return BadRequest();
             else
             {
+                Imagens.ImageUrl = imageFullPath;
                 var imageObj = new Imagem()
                 {
-                    ImageUrl = arquivo,
+                    ImageUrl = Imagens.ImageUrl,
                     VeiculoId = Imagens.VeiculoId
                 };
                 _svtaDbContext.Imagens.Add(imageObj);
