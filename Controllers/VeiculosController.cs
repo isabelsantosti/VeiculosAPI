@@ -23,6 +23,26 @@ namespace VeiculosAPI.Controllers
         {
             _sVTADbContext = sVTADbContext;
         }
+        [HttpGet("[action]")]
+        public IQueryable<object> NovosRecomendados()
+        {
+            var veiculos = from v in _sVTADbContext.Veiculos
+                           where v.isNovo == true
+                           select new
+                           {
+                               Id = v.Id,
+                               Nome = v.Nome,
+                               Preco = v.Preco,
+                               Modelo = v.Modelo,
+                               Fabricante = v.Fabricante,
+                               IsDestaque = v.isDestaque,
+                               ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+                           };
+            return veiculos;
+        }
+
+
+
         public IActionResult Post(Veiculo veiculo)
         {
             try
@@ -137,6 +157,8 @@ namespace VeiculosAPI.Controllers
                                Cor = a.Cor,
                                DataPostagem = a.DataPostagem,
                                Condicao = a.Condicao,
+                               isNovo = a.isNovo,
+                               isDestaque = a.isDestaque,
                                Localizacao = a.Localizacao,
                                Images = a.Imagens,
                                Email = u.Email,
@@ -164,6 +186,7 @@ namespace VeiculosAPI.Controllers
                                Preco = v.Preco,
                                Data = v.DataPostagem,
                                Localizacao = v.Localizacao,
+                               Fabricante = v.Fabricante,
                                isDestaque = v.isDestaque,
                                ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
                            };
