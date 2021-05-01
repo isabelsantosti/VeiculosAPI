@@ -37,6 +37,8 @@ namespace VeiculosAPI.Controllers
             var guid = Guid.NewGuid().ToString();
             var arquivo = $"{guid}.jpg";
             var pasta = "wwwroot/Images";
+            var fullPath = $"{arquivo}/{pasta}";
+            var imageFullPath = fullPath.Remove(0, 7);
             var resposta = FilesHelper.UploadImage(stream, pasta, arquivo);
             if (!resposta)
                 return BadRequest();
