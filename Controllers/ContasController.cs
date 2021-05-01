@@ -57,18 +57,13 @@ namespace VeiculosAPI.Controllers
         {
             //usando o LINQ para fazer a consulta no email do usuário
             var userEmail = _svtaDbContext.Usuarios.FirstOrDefault(u => u.Email == usuario.Email);
-            if (userEmail == null)
-            {
-                return NotFound();
-            }
+            if (userEmail == null) return NotFound();
             //verifica se o hash na senha do usuario é falso 
-            if (!SecurePasswordHasherHelper.Verify(usuario.Senha, userEmail.Senha))
-            {
-                return Unauthorized();
-            }
+            if (!SecurePasswordHasherHelper.Verify(usuario.Senha, userEmail.Senha)) return Unauthorized();
             var claims = new[]
             {
                new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
+               new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                new Claim(ClaimTypes.Email, usuario.Email),
             };
             var token = _auth.GenerateAccessToken(claims);
