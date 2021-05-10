@@ -27,13 +27,14 @@ namespace VeiculosAPI.Controllers
         public IQueryable<object> NovosRecomendados()
         {
             var veiculos = from v in _sVTADbContext.Veiculos
-                           where v.isNovo == true
+                           where v.isRecomendado == true
                            select new
                            {
                                Id = v.Id,
                                Nome = v.Nome,
                                Preco = v.Preco,
                                Modelo = v.Modelo,
+                               Ano = v.Ano,
                                Fabricante = v.Fabricante,
                                IsDestaque = v.isDestaque,
                                ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
@@ -58,13 +59,18 @@ namespace VeiculosAPI.Controllers
                     Cor = veiculo.Cor,
                     Fabricante = veiculo.Fabricante,
                     Condicao = veiculo.Condicao,
+                    Ano = veiculo.Ano,
+                    Cambio = veiculo.Cambio,
+                    Direcao = veiculo.Direcao,
+                    Portas = veiculo.Portas,
+                    Quilometragem = veiculo.Quilometragem,
                     DataPostagem = DateTime.Now,
                     Motor = veiculo.Motor,
                     Preco = veiculo.Preco,
                     Modelo = veiculo.Modelo,
                     Localizacao = veiculo.Localizacao,
                     CategoriaId = veiculo.CategoriaId,
-                    isNovo = false,
+                    isRecomendado = false,
                     isDestaque = false,
                     UsuarioId = usuario.Id
                 };
@@ -89,7 +95,7 @@ namespace VeiculosAPI.Controllers
         public IActionResult RecomendadoAds()
         {
             var veiculos = from v in _sVTADbContext.Veiculos
-                           where v.isNovo == true
+                           where v.isRecomendado == true
                            select new
                            {
                                Id = v.Id,
@@ -109,6 +115,7 @@ namespace VeiculosAPI.Controllers
                                Id = v.Id,
                                Nome = v.Nome,
                                Modelo = v.Modelo,
+                               Ano = v.Ano,
                                Fabricante = v.Fabricante
                            };
             return veiculos.Take(15);
@@ -127,6 +134,7 @@ namespace VeiculosAPI.Controllers
                                Modelo = v.Modelo,
                                Localizacao = v.Localizacao,
                                Fabricante = v.Fabricante,
+                               Ano = v.Ano,
                                Data = v.DataPostagem,
                                isDestaque = v.isDestaque,
                                ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
@@ -153,12 +161,16 @@ namespace VeiculosAPI.Controllers
                                Preco = a.Preco,
                                Modelo = a.Modelo,
                                Fabricante = a.Fabricante,
-                               Kilometragem = a.Kilometragem,
+                               Quilometragem = a.Quilometragem,
                                Motor = a.Motor,
                                Cor = a.Cor,
+                               Ano = a.Ano,
+                               Cambio = a.Cambio,
+                               Portas = a.Portas,
+                               Direcao = a.Direcao,
                                DataPostagem = a.DataPostagem,
                                Condicao = a.Condicao,
-                               isNovo = a.isNovo,
+                               isRecomendado = a.isRecomendado,
                                isDestaque = a.isDestaque,
                                Localizacao = a.Localizacao,
                                Images = a.Imagens,
@@ -188,6 +200,7 @@ namespace VeiculosAPI.Controllers
                                Data = v.DataPostagem,
                                Localizacao = v.Localizacao,
                                Fabricante = v.Fabricante,
+                               Ano = v.Ano,
                                isDestaque = v.isDestaque,
                                ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
                            };
@@ -213,6 +226,7 @@ namespace VeiculosAPI.Controllers
                                    Nome = v.Nome,
                                    Preco = v.Preco,
                                    Modelo = v.Modelo,
+                                   Ano = v.Ano,
                                    Localizacao = v.Localizacao,
                                    Fabricante = v.Fabricante,
                                    DataPostagem = v.DataPostagem,
@@ -233,6 +247,7 @@ namespace VeiculosAPI.Controllers
                                    Nome = v.Nome,
                                    Preco = v.Preco,
                                    Modelo = v.Modelo,
+                                   Ano = v.Ano,
                                    Localizacao = v.Localizacao,
                                    Fabricante = v.Fabricante,
                                    DataPostagem = v.DataPostagem,
@@ -250,6 +265,7 @@ namespace VeiculosAPI.Controllers
                                    Nome = v.Nome,
                                    Preco = v.Preco,
                                    Modelo = v.Modelo,
+                                   Ano = v.Ano,
                                    Localizacao = v.Localizacao,
                                    Fabricante = v.Fabricante,
                                    DataPostagem = v.DataPostagem,
