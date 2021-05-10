@@ -109,6 +109,9 @@ namespace VeiculosAPI.Migrations
                     b.Property<string>("Fabricante")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Kilometragem")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Localizacao")
                         .HasColumnType("nvarchar(max)");
 

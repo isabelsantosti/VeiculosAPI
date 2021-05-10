@@ -15,6 +15,11 @@ namespace VeiculosAPI.Models
         public string Cor { get; set; }
         public string Motor { get; set; }
         public string Fabricante { get; set; }
+        public string Quilometragem { get; set; }
+        public int Ano { get; set; }
+        public string Cambio { get; set; }
+        public string Combustivel { get; set; }
+        public string Portas { get; set; }
         public DateTime DataPostagem { get; set; }
         public bool isNovo { get; set; }
         public bool isDestaque { get; set; }

@@ -153,6 +153,7 @@ namespace VeiculosAPI.Controllers
                                Preco = a.Preco,
                                Modelo = a.Modelo,
                                Fabricante = a.Fabricante,
+                               Kilometragem = a.Kilometragem,
                                Motor = a.Motor,
                                Cor = a.Cor,
                                DataPostagem = a.DataPostagem,
