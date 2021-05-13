@@ -62,7 +62,7 @@ namespace VeiculosAPI
             app.UseHttpsRedirection();
             app.UseRouting();
             //garante que o banco sera criado 
-            //sVTADbContext.Database.EnsureCreated();
+            sVTADbContext.Database.EnsureCreated();
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseAuthorization();
