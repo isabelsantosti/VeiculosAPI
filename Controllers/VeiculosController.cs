@@ -177,6 +177,7 @@ namespace VeiculosAPI.Controllers
                                Localizacao = a.Localizacao,
                                Images = a.Imagens,
                                Email = u.Email,
+                               UserNome = u.Nome,
                                Contato = u.Telefone,
                                ImageUrl = u.ImageUrl
                            }).FirstOrDefault();
@@ -278,6 +279,14 @@ namespace VeiculosAPI.Controllers
             }
 
             return veiculos;
+        }
+        [HttpDelete("{id}")]
+        public IActionResult ExcluirVeiculo(int id)
+        {
+            var veiculo = _sVTADbContext.Veiculos.Find(id);
+            _sVTADbContext.Veiculos.Remove(veiculo);
+            _sVTADbContext.SaveChanges();
+            return Ok("Item excluido com sucesso!");
         }
     }
 }
