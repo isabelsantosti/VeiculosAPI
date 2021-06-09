@@ -36,15 +36,18 @@ namespace VeiculosAPI.Controllers
             //globally unique identifier = GUID serve para dar um id unico para o arquivo, evitando sua duplicação
             var guid = Guid.NewGuid().ToString();
             var arquivo = $"{guid}.jpg";
-            var pasta = "wwwroot/Images";
+            var pasta = "wwwroot/images";
+            var fullPath = $"{pasta}/{arquivo}";
+            var imageFullPath = fullPath.Remove(0, 7);
             var resposta = FilesHelper.UploadImage(stream, pasta, arquivo);
             if (!resposta)
                 return BadRequest();
             else
             {
+                Imagens.ImageUrl = imageFullPath;
                 var imageObj = new Imagem()
                 {
-                    ImageUrl = arquivo,
+                    ImageUrl = Imagens.ImageUrl,
                     VeiculoId = Imagens.VeiculoId
                 };
                 _svtaDbContext.Imagens.Add(imageObj);

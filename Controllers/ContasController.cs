@@ -16,6 +16,7 @@ using VeiculosAPI.Models;
 
 namespace VeiculosAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class ContasController : ControllerBase
@@ -31,6 +32,7 @@ namespace VeiculosAPI.Controllers
             _auth = new AuthService(_configuration);
         }
         [HttpPost]
+        [AllowAnonymous]
         //rota api/contas/registro
         //Método de registro de usuários
         public IActionResult Registro([FromBody] Usuario usuario)
@@ -50,22 +52,18 @@ namespace VeiculosAPI.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult Login([FromBody] Usuario usuario)
         {
             //usando o LINQ para fazer a consulta no email do usuário
             var userEmail = _svtaDbContext.Usuarios.FirstOrDefault(u => u.Email == usuario.Email);
-            if (userEmail == null)
-            {
-                return NotFound();
-            }
+            if (userEmail == null) return NotFound();
             //verifica se o hash na senha do usuario é falso 
-            if (!SecurePasswordHasherHelper.Verify(usuario.Senha, userEmail.Senha))
-            {
-                return Unauthorized();
-            }
+            if (!SecurePasswordHasherHelper.Verify(usuario.Senha, userEmail.Senha)) return Unauthorized();
             var claims = new[]
             {
                new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
+               new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                new Claim(ClaimTypes.Email, usuario.Email),
             };
             var token = _auth.GenerateAccessToken(claims);
@@ -83,7 +81,6 @@ namespace VeiculosAPI.Controllers
             });
         }
         [HttpPost]
-        [Authorize]
         public IActionResult TrocarSenha([FromBody] TrocarSenha trocarSenha)
         {
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
@@ -99,7 +96,6 @@ namespace VeiculosAPI.Controllers
             return Ok("Sua senha foi alterada com sucesso");
         }
         [HttpPost]
-        [Authorize]
         public IActionResult TrocarTelefone([FromBody] TrocarTelefone trocarTelefone)
         {
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
@@ -112,7 +108,6 @@ namespace VeiculosAPI.Controllers
             return Ok("Seu numero de telefone foi atualizado");
         }
         [HttpPost]
-        [Authorize]
         public IActionResult EditarPerfil([FromBody] byte[] ImageArray)
         {
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
@@ -123,17 +118,34 @@ namespace VeiculosAPI.Controllers
             //globally unique identifier = GUID serve para dar um id unico para o arquivo, evitando sua duplicação
             var guid = Guid.NewGuid().ToString();
             var arquivo = $"{guid}.jpg";
-            var pasta = "wwwroot/Images";
+            var pasta = "wwwroot/ProfileImages";
+            var fullPath = $"{pasta}/{arquivo}";
+            var ImageFullPath = fullPath.Remove(0, 7);
             var resposta = FilesHelper.UploadImage(stream, pasta, arquivo);
             if (!resposta)
                 return BadRequest();
             else
             {
-                usuario.ImageUrl = arquivo;
+                usuario.ImageUrl = ImageFullPath;
                 _svtaDbContext.SaveChanges();
                 return StatusCode(StatusCodes.Status201Created);
             }
         }
-
+        [HttpGet]
+        public IActionResult UserProfileImage()
+        {
+            var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+            var usuario = _svtaDbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
+            if (usuario == null)
+                return NotFound("Usuario não encontrado");
+            var responseResult = _svtaDbContext.Usuarios
+                .Where(x => x.Email == usuarioEmail)
+                .Select(x => new
+                {
+                    x.ImageUrl
+                })
+                .SingleOrDefault();
+            return Ok(responseResult);
+        }
     }
 }

@@ -32,7 +32,7 @@ namespace VeiculosAPI
         {
             //adicionando o servi�o para se conectar ao banco
             services.AddControllers();
-            services.AddDbContext<SVTADbContext>(options => options.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=AutomoveisDB;"));
+            services.AddDbContext<SVTADbContext>(options => options.UseSqlServer(@"Data Source=DESKTOP-L3LK6E7\SQLEXPRESS01; Initial Catalog=AutomoveisDB;  Integrated Security=True; MultipleActiveResultSets=True "));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -61,7 +61,7 @@ namespace VeiculosAPI
 
             app.UseHttpsRedirection();
             app.UseRouting();
-            //garante que o banco sera criado
+            //garante que o banco sera criado 
             //sVTADbContext.Database.EnsureCreated();
             app.UseAuthentication();
             app.UseStaticFiles();

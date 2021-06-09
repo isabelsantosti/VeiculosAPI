@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace VeiculosAPI.Migrations
 {
-    public partial class InicialCreate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,8 @@ namespace VeiculosAPI.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Senha = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Telefone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DataInclusao = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,8 +51,14 @@ namespace VeiculosAPI.Migrations
                     Cor = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Motor = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Fabricante = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Quilometragem = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ano = table.Column<int>(type: "int", nullable: false),
+                    Cambio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Combustivel = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Portas = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Direcao = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DataPostagem = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    isNovo = table.Column<bool>(type: "bit", nullable: false),
+                    isRecomendado = table.Column<bool>(type: "bit", nullable: false),
                     isDestaque = table.Column<bool>(type: "bit", nullable: false),
                     Localizacao = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Condicao = table.Column<string>(type: "nvarchar(max)", nullable: true),

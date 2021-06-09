@@ -23,34 +23,67 @@ namespace VeiculosAPI.Controllers
         {
             _sVTADbContext = sVTADbContext;
         }
-        [Authorize]
+        [HttpGet("[action]")]
+        public IQueryable<object> NovosRecomendados()
+        {
+            var veiculos = from v in _sVTADbContext.Veiculos
+                           where v.isRecomendado == true
+                           select new
+                           {
+                               Id = v.Id,
+                               Nome = v.Nome,
+                               Preco = v.Preco,
+                               Modelo = v.Modelo,
+                               Ano = v.Ano,
+                               Fabricante = v.Fabricante,
+                               IsDestaque = v.isDestaque,
+                               ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+                           };
+            return veiculos;
+        }
+
+
+
         public IActionResult Post(Veiculo veiculo)
         {
-            var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
-            var usuario = _sVTADbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
-            if (usuario == null)
-                return NotFound("Usuario não encontrado");
-            var veiculos = new Veiculo()
+            try
             {
-                Nome = veiculo.Nome,
-                Descricao = veiculo.Descricao,
-                Cor = veiculo.Cor,
-                Fabricante = veiculo.Fabricante,
-                Condicao = veiculo.Condicao,
-                DataPostagem = DateTime.Now,
-                Motor = veiculo.Motor,
-                Preco = veiculo.Preco,
-                Modelo = veiculo.Modelo,
-                Localizacao = veiculo.Localizacao,
-                CategoriaId = veiculo.CategoriaId,
-                isDestaque = false,
-                isNovo = false,
-                UsuarioId = usuario.Id
-            };
-            _sVTADbContext.Veiculos.Add(veiculos);
-            _sVTADbContext.SaveChanges();
+                var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
+                var usuario = _sVTADbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
+                if (usuario == null)
+                    return NotFound("Usuario não encontrado");
+                var veiculos = new Veiculo()
+                {
+                    Nome = veiculo.Nome,
+                    Descricao = veiculo.Descricao,
+                    Cor = veiculo.Cor,
+                    Fabricante = veiculo.Fabricante,
+                    Condicao = veiculo.Condicao,
+                    Ano = veiculo.Ano,
+                    Cambio = veiculo.Cambio,
+                    Direcao = veiculo.Direcao,
+                    Portas = veiculo.Portas,
+                    Combustivel = veiculo.Combustivel,
+                    Quilometragem = veiculo.Quilometragem,
+                    DataPostagem = DateTime.Now,
+                    Motor = veiculo.Motor,
+                    Preco = veiculo.Preco,
+                    Modelo = veiculo.Modelo,
+                    Localizacao = veiculo.Localizacao,
+                    CategoriaId = veiculo.CategoriaId,
+                    isRecomendado = false,
+                    isDestaque = false,
+                    UsuarioId = usuario.Id
+                };
+                _sVTADbContext.Veiculos.Add(veiculos);
+                _sVTADbContext.SaveChanges();
 
-            return Ok(new { veiculoId = veiculos.Id, message = "Veículo adicionado com sucesso!" });
+                return Ok(new { veiculoId = veiculos.Id, message = "Veículo adicionado com sucesso!", status = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -63,7 +96,7 @@ namespace VeiculosAPI.Controllers
         public IActionResult RecomendadoAds()
         {
             var veiculos = from v in _sVTADbContext.Veiculos
-                           where v.isNovo == true
+                           where v.isRecomendado == true
                            select new
                            {
                                Id = v.Id,
@@ -74,19 +107,23 @@ namespace VeiculosAPI.Controllers
         }
         //esse método vai retornar os veiculos recomendados os quais serão definidos pelo Adm no banco
         [HttpGet("[action]")]
-        public IActionResult BuscarVeiculos(string busca)
+        public IQueryable<object> BuscarVeiculos(string busca)
         {
             var veiculos = from v in _sVTADbContext.Veiculos
-                           where v.Nome.StartsWith(busca)
+                           where v.Nome.StartsWith(busca) || v.Fabricante.StartsWith(busca)
                            select new
                            {
                                Id = v.Id,
                                Nome = v.Nome,
+                               Modelo = v.Modelo,
+                               Ano = v.Ano,
+                               Fabricante = v.Fabricante
                            };
-            return Ok(veiculos);
+            return veiculos.Take(15);
         }
+        //GET: api/veiculos?categoriaId=1
         [HttpGet]
-        public IActionResult GetVeiculos(int CategoriaId)
+        public IQueryable<object> GetVeiculos(int CategoriaId)
         {
             var veiculos = from v in _sVTADbContext.Veiculos
                            where v.CategoriaId.Equals(CategoriaId)
@@ -95,43 +132,55 @@ namespace VeiculosAPI.Controllers
                                Id = v.Id,
                                Nome = v.Nome,
                                Preco = v.Preco,
-                               Data = v.DataPostagem,
+                               Modelo = v.Modelo,
                                Localizacao = v.Localizacao,
+                               Fabricante = v.Fabricante,
+                               Ano = v.Ano,
+                               Data = v.DataPostagem,
                                isDestaque = v.isDestaque,
                                ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
 
                            };
 
-            return Ok(veiculos);
+            return veiculos;
         }
         [HttpGet("[action]")]
-        public IActionResult DetalhesVeiculos(int id)
+        public async Task<IActionResult> DetalhesVeiculos(int id)
         {
-            var encontraVeiculo = _sVTADbContext.Veiculos.Find(id);
+            var encontraVeiculo = await _sVTADbContext.Veiculos.FindAsync(id);
             if (encontraVeiculo == null)
                 return NotFound("Não foi possível encontrar o veículo");
 
-            var veiculo = from a in _sVTADbContext.Veiculos
-                          join u in _sVTADbContext.Usuarios on a.UsuarioId equals u.Id
-                          where a.Id == id
-                          select new
-                          {
-                              Id = a.Id,
-                              Nome = a.Nome,
-                              Descricao = a.Descricao,
-                              Preco = a.Preco,
-                              Modelo = a.Modelo,
-                              Fabricante = a.Fabricante,
-                              Motor = a.Motor,
-                              Cor = a.Cor,
-                              DataPostagem = a.DataPostagem,
-                              Condicao = a.Condicao,
-                              Localizacao = a.Localizacao,
-                              Images = a.Imagens,
-                              Email = u.Email,
-                              Contato = u.Telefone,
-                              ImageUrl = u.ImageUrl
-                          };
+            var veiculo = (from a in _sVTADbContext.Veiculos
+                           join u in _sVTADbContext.Usuarios on a.UsuarioId equals u.Id
+                           where a.Id == id
+                           select new
+                           {
+                               Id = a.Id,
+                               Nome = a.Nome,
+                               Descricao = a.Descricao,
+                               Preco = a.Preco,
+                               Modelo = a.Modelo,
+                               Fabricante = a.Fabricante,
+                               Quilometragem = a.Quilometragem,
+                               Motor = a.Motor,
+                               Cor = a.Cor,
+                               Ano = a.Ano,
+                               Cambio = a.Cambio,
+                               Portas = a.Portas,
+                               Direcao = a.Direcao,
+                               Combustivel = a.Combustivel,
+                               DataPostagem = a.DataPostagem,
+                               Condicao = a.Condicao,
+                               isRecomendado = a.isRecomendado,
+                               isDestaque = a.isDestaque,
+                               Localizacao = a.Localizacao,
+                               Images = a.Imagens,
+                               Email = u.Email,
+                               UserNome = u.Nome,
+                               Contato = u.Telefone,
+                               ImageUrl = u.ImageUrl
+                           }).FirstOrDefault();
 
             return Ok(veiculo);
         }
@@ -139,13 +188,13 @@ namespace VeiculosAPI.Controllers
         [HttpGet("[action]")]
         public IActionResult MeusAds()
         {
-
             var usuarioEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
             var usuario = _sVTADbContext.Usuarios.FirstOrDefault(u => u.Email == usuarioEmail);
             if (usuario == null)
                 return NotFound("Usuario não encontrado");
             var veiculos = from v in _sVTADbContext.Veiculos
                            where v.UsuarioId.Equals(usuario.Id)
+                           orderby v.DataPostagem descending
                            select new
                            {
                                Id = v.Id,
@@ -153,12 +202,91 @@ namespace VeiculosAPI.Controllers
                                Preco = v.Preco,
                                Data = v.DataPostagem,
                                Localizacao = v.Localizacao,
+                               Fabricante = v.Fabricante,
+                               Ano = v.Ano,
                                isDestaque = v.isDestaque,
                                ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
-
                            };
 
             return Ok(veiculos);
+        }
+        //GET api/Veiculos/FiltrarVeiculos?categoriaId=1&condicao=Novo&sort=asc&preco=20
+        [HttpGet("[action]")]
+        public IQueryable<object> FiltrarVeiculos(int categoriaId, string condicao, string sort, double preco)
+        {
+            IQueryable<object> veiculos;
+            switch (sort)
+            {
+                case "desc":
+                    veiculos = from v in _sVTADbContext.Veiculos
+                               join u in _sVTADbContext.Usuarios on v.UsuarioId equals u.Id
+                               join c in _sVTADbContext.Categorias on v.CategoriaId equals c.Id
+                               where v.Preco >= preco && c.Id == categoriaId && v.Condicao == condicao
+                               orderby v.Preco descending
+                               select new
+                               {
+                                   Id = v.Id,
+                                   Nome = v.Nome,
+                                   Preco = v.Preco,
+                                   Modelo = v.Modelo,
+                                   Ano = v.Ano,
+                                   Localizacao = v.Localizacao,
+                                   Fabricante = v.Fabricante,
+                                   DataPostagem = v.DataPostagem,
+                                   isDestaque = v.isDestaque,
+                                   ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+                               };
+                    break;
+
+                case "asc":
+                    veiculos = from v in _sVTADbContext.Veiculos
+                               join u in _sVTADbContext.Usuarios on v.UsuarioId equals u.Id
+                               join c in _sVTADbContext.Categorias on v.CategoriaId equals c.Id
+                               where v.Preco >= preco && c.Id == categoriaId && v.Condicao == condicao
+                               orderby v.Preco descending
+                               select new
+                               {
+                                   Id = v.Id,
+                                   Nome = v.Nome,
+                                   Preco = v.Preco,
+                                   Modelo = v.Modelo,
+                                   Ano = v.Ano,
+                                   Localizacao = v.Localizacao,
+                                   Fabricante = v.Fabricante,
+                                   DataPostagem = v.DataPostagem,
+                                   isDestaque = v.isDestaque,
+                                   ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+                               };
+                    break;
+
+                default:
+                    veiculos = from v in _sVTADbContext.Veiculos
+                               where v.CategoriaId == categoriaId
+                               select new
+                               {
+                                   Id = v.Id,
+                                   Nome = v.Nome,
+                                   Preco = v.Preco,
+                                   Modelo = v.Modelo,
+                                   Ano = v.Ano,
+                                   Localizacao = v.Localizacao,
+                                   Fabricante = v.Fabricante,
+                                   DataPostagem = v.DataPostagem,
+                                   isDestaque = v.isDestaque,
+                                   ImageUrl = v.Imagens.FirstOrDefault().ImageUrl
+                               };
+                    break;
+            }
+
+            return veiculos;
+        }
+        [HttpDelete("{id}")]
+        public IActionResult ExcluirVeiculo(int id)
+        {
+            var veiculo = _sVTADbContext.Veiculos.Find(id);
+            _sVTADbContext.Veiculos.Remove(veiculo);
+            _sVTADbContext.SaveChanges();
+            return Ok("Item excluido com sucesso!");
         }
     }
 }

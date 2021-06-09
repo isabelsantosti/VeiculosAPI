@@ -91,8 +91,17 @@ namespace VeiculosAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("Ano")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Cambio")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("CategoriaId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Combustivel")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Condicao")
                         .HasColumnType("nvarchar(max)");
@@ -104,6 +113,9 @@ namespace VeiculosAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direcao")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Fabricante")
@@ -121,8 +133,14 @@ namespace VeiculosAPI.Migrations
                     b.Property<string>("Nome")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Portas")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("Preco")
                         .HasColumnType("float");
+
+                    b.Property<string>("Quilometragem")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
@@ -130,7 +148,7 @@ namespace VeiculosAPI.Migrations
                     b.Property<bool>("isDestaque")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("isNovo")
+                    b.Property<bool>("isRecomendado")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
